@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PPTX Viewer - AppHub</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Dependencies for client-side PPTX parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptx2html@1.1.4/dist/pptx2html.min.js"></script>
+</head>
+<body class="viewer-body">
+
+  <!-- Top Navigation & Presentation Switcher Bar -->
+  <header class="top-bar">
+    <div class="header-left">
+      <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Home</a>
+      <span class="logo"><i class="fa-file-powerpoint"></i> PPTX Viewer</span>
+    </div>
+    
+    <div class="file-buttons">
+      <button class="file-btn active" data-file="presentation1.pptx">Presentation 1</button>
+      <button class="file-btn" data-file="presentation2.pptx">Presentation 2</button>
+      <button class="file-btn" data-file="presentation3.pptx">Presentation 3</button>
+      <label class="upload-btn">
+        <i class="fa-solid fa-upload"></i> Upload
+        <input type="file" id="file-input" accept=".pptx" hidden>
+      </label>
+    </div>
+  </header>
+
+  <!-- Main Presentation Display -->
+  <main class="viewer-container">
+    <div id="slide-stage" class="slide-stage">
+      <div class="loading-spinner" id="loader">Select or Upload a Presentation...</div>
+    </div>
+  </main>
+
+  <!-- Footer Navigation Bar -->
+  <footer class="footer-bar">
+    <div class="controls">
+      <button id="prev-btn" class="nav-btn" disabled><i class="fa-solid fa-chevron-left"></i> Previous</button>
+      <span class="slide-counter">
+        Slide <span id="current-slide">0</span> of <span id="total-slides">0</span>
+      </span>
+      <button id="next-btn" class="nav-btn" disabled>Next <i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
