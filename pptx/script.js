@@ -11,9 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let totalSlides = 0;
   let slides = [];
 
-  // Initialize viewer with a default sample PPTX if clicked
+  // Switch preset files
   fileBtns.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
+    btn.addEventListener("click", () => {
       fileBtns.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       const fileName = btn.getAttribute("data-file");
@@ -21,16 +21,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Handle local file uploads
+  // Handle local uploaded files
   fileInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Remove active status from preset buttons
       fileBtns.forEach((b) => b.classList.remove("active"));
       loadLocalPPTX(file);
     }
   });
 
-  // Navigation Event Listeners
+  // Navigation handlers
   prevBtn.addEventListener("click", () => {
     if (currentSlideIndex > 0) {
       showSlide(currentSlideIndex - 1);
@@ -52,56 +53,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Load PPTX from URL/Path
   function loadRemotePPTX(url) {
-    showLoading();
+    showLoading("Loading preset presentation...");
     fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error("File not found");
         return res.arrayBuffer();
       })
       .then((buffer) => renderPPTX(buffer))
-      .catch((err) => {
-        showError("Could not load PPTX file. Ensure files exist on your server or upload a file.");
+      .catch(() => {
+        showError("Remote file not found. Try uploading a local .pptx file.");
       });
   }
 
-  // Load local uploaded PPTX file
   function loadLocalPPTX(file) {
-    showLoading();
+    showLoading(`Loading ${file.name}...`);
     const reader = new FileReader();
-    reader.onload = (e) => renderPPTX(e.target.result);
+
+    reader.onload = (e) => {
+      renderPPTX(e.target.result);
+    };
+
+    reader.onerror = () => {
+      showError("Error reading the selected file.");
+    };
+
     reader.readAsArrayBuffer(file);
   }
 
-  // Render PPTX ArrayBuffer into HTML slides
   function renderPPTX(buffer) {
-    slideStage.innerHTML = ""; // Clear current view
+    slideStage.innerHTML = "";
 
-    $(`#${slideStage.id}`).pptx2html({
-      pptx: buffer,
-      slideMode: false,
-      keyBoard: false,
-      error: function () {
-        showError("Failed to parse PPTX file format.");
-      },
-      success: function () {
-        // Find all rendered slides
-        slides = Array.from(slideStage.querySelectorAll("section"));
-        totalSlides = slides.length;
+    // Parse presentation using PPTX2HTML library
+    if (window.$ && $.fn.pptx2html) {
+      $(`#${slideStage.id}`).pptx2html({
+        pptx: buffer,
+        slideMode: false,
+        keyBoard: false,
+        error: function () {
+          showError("Failed to parse .pptx file structure.");
+        },
+        success: function () {
+          slides = Array.from(slideStage.querySelectorAll("section"));
+          totalSlides = slides.length;
 
-        if (totalSlides === 0) {
-          showError("No slides found in presentation.");
-          return;
-        }
+          if (totalSlides === 0) {
+            showError("No slides found in this file.");
+            return;
+          }
 
-        currentSlideIndex = 0;
-        showSlide(0);
-      },
-    });
+          showSlide(0);
+        },
+      });
+    } else {
+      showError("PPTX parsing library missing or failed to load.");
+    }
   }
 
-  // Display specific slide by index
   function showSlide(index) {
     slides.forEach((slide, idx) => {
       if (idx === index) {
@@ -115,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateUI();
   }
 
-  // Update Footer UI Controls
   function updateUI() {
     currentSlideEl.textContent = totalSlides > 0 ? currentSlideIndex + 1 : 0;
     totalSlidesEl.textContent = totalSlides;
@@ -124,8 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
     nextBtn.disabled = currentSlideIndex >= totalSlides - 1 || totalSlides === 0;
   }
 
-  function showLoading() {
-    slideStage.innerHTML = `<div class="loading-spinner">Loading Presentation...</div>`;
+  function showLoading(msg) {
+    slideStage.innerHTML = `<div class="loading-spinner">${msg}</div>`;
     prevBtn.disabled = true;
     nextBtn.disabled = true;
     currentSlideEl.textContent = 0;
@@ -133,6 +140,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showError(msg) {
-    slideStage.innerHTML = `<div style="color: #ff5555; text-align: center; padding: 20px;">${msg}</div>`;
+    slideStage.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 20px;">${msg}</div>`;
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
   }
 });
