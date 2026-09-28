@@ -6,34 +6,36 @@
   <title>PPTX Viewer</title>
   <link rel="stylesheet" href="style.css">
   
-  <!-- Dependencies for client-side PPTX parsing -->
+  <!-- Required CDN libraries for client-side PPTX parsing -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pptx2html@1.1.4/dist/pptx2html.min.js"></script>
 </head>
 <body>
 
-  <!-- Top Navigation / File Switcher -->
+  <!-- Top Toolbar -->
   <header class="top-bar">
     <span class="logo">PPTX Viewer</span>
+    
     <div class="file-buttons">
-      <button class="file-btn active" data-file="presentation1.pptx">Presentation 1</button>
+      <button class="file-btn active" data-file="/file_viewer/pptx/presentation1.pptx">Presentation 1</button>
       <button class="file-btn" data-file="presentation2.pptx">Presentation 2</button>
       <button class="file-btn" data-file="presentation3.pptx">Presentation 3</button>
-      <label class="upload-btn">
-        Upload PPTX
-        <input type="file" id="file-input" accept=".pptx" hidden>
-      </label>
+      
+      <!-- Upload Button tied directly to input via 'for' attribute -->
+      <label for="file-input" class="upload-btn">Upload PPTX</label>
+      <input type="file" id="file-input" accept=".pptx">
     </div>
   </header>
 
-  <!-- Main Slide Display Area -->
+  <!-- Presentation Stage Container -->
   <main class="viewer-container">
     <div id="slide-stage" class="slide-stage">
-      <div class="loading-spinner" id="loader">Select or Upload a Presentation...</div>
+      <div class="loading-spinner">Select or Upload a Presentation...</div>
     </div>
   </main>
 
-  <!-- Footer Navigation Bar -->
+  <!-- Footer Controls -->
   <footer class="footer-bar">
     <div class="controls">
       <button id="prev-btn" class="nav-btn" disabled>&larr; Previous</button>
