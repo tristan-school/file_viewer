@@ -1,165 +1,44 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const slideStage = document.getElementById("slide-stage");
-  
-  // Guard script if executed on index page without PPTX viewer stage
-  if (!slideStage) return;
+  const toolCards = document.querySelectorAll(".tool-card");
 
-  const prevBtn = document.getElementById("prev-btn");
-  const nextBtn = document.getElementById("next-btn");
-  const currentSlideEl = document.getElementById("current-slide");
-  const totalSlidesEl = document.getElementById("total-slides");
-  const fileBtns = document.querySelectorAll(".file-btn");
-  const fileInput = document.getElementById("file-input");
-
-  let currentSlideIndex = 0;
-  let totalSlides = 0;
-  let slides = [];
-
-  // Switch between preset presentations
-  fileBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      fileBtns.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      const fileName = btn.getAttribute("data-file");
-      loadRemotePPTX(fileName);
+  // 1. Add visual feedback on click
+  toolCards.forEach((card) => {
+    card.addEventListener("click", (e) => {
+      // Add a brief pulse animation effect on launch
+      card.style.transform = "scale(0.98)";
+      card.style.opacity = "0.8";
     });
   });
 
-  // Upload local presentation
-  fileInput.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      fileBtns.forEach((b) => b.classList.remove("active"));
-      loadLocalPPTX(file);
-    }
-  });
-
-  // Footer navigation controls
-  prevBtn.addEventListener("click", () => {
-    if (currentSlideIndex > 0) {
-      showSlide(currentSlideIndex - 1);
-    }
-  });
-
-  nextBtn.addEventListener("click", () => {
-    if (currentSlideIndex < totalSlides - 1) {
-      showSlide(currentSlideIndex + 1);
-    }
-  });
-
-  // Keyboard Navigation
+  // 2. Keyboard shortcuts to launch tools quickly
+  // Pressing '1' launches PPTX Viewer, '2' launches PDF Reader, etc.
   document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-      prevBtn.click();
-    } else if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === " ") {
-      nextBtn.click();
+    // Ignore keypresses if user is typing into an input field
+    if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+
+    const keyNumber = parseInt(e.key, 10);
+    if (!isNaN(keyNumber) && keyNumber > 0 && keyNumber <= toolCards.length) {
+      const targetCard = toolCards[keyNumber - 1];
+      if (targetCard && targetCard.getAttribute("href")) {
+        targetCard.click(); // Trigger click & navigation
+      }
     }
   });
 
-  function loadRemotePPTX(url) {
-    showLoading();
-    fetch(url)
-      .then((res) => {
-        if (!res.ok) throw new Error("File not found");
-        return res.arrayBuffer();
-      })
-      .then((buffer) => renderPPTX(buffer))
-      .catch(() => {
-        showError("Could not load PPTX file from server. Upload a file via the button above.");
-      });
-  }
-
-  function loadLocalPPTX(file) {
-    showLoading();
-    const reader = new FileReader();
-    reader.onload = (e) => renderPPTX(e.target.result);
-    reader.readAsArrayBuffer(file);
-  }
-
-  function renderPPTX(buffer) {
-    slideStage.innerHTML = "";
-
-    if (window.$ && $.fn.pptx2html) {
-      $(`#${slideStage.id}`).pptx2html({
-        pptx: buffer,
-        slideMode: false,
-        keyBoard: false,
-        error: function () {
-          showError("Failed to parse PowerPoint presentation format.");
-        },
-        success: function () {
-          slides = Array.from(slideStage.querySelectorAll("section"));
-          totalSlides = slides.length;
-
-          if (totalSlides === 0) {
-            showError("No slide slides found in presentation.");
-            return;
-          }
-
-          currentSlideIndex = 0;
-          showSlide(0);
-        },
-      });
-    } else {
-      // Demo fallback renderer mode if CDN libraries are unavailable offline
-      renderDemoSlides();
-    }
-  }
-
-  function renderDemoSlides() {
-    slideStage.innerHTML = `
-      <section class="active-slide" style="display:flex; justify-content:center; align-items:center; flex-direction:column; padding:40px; text-align:center;">
-        <h2 style="font-size:2rem; margin-bottom:12px; color:#0284c7;">Welcome Slide</h2>
-        <p style="color:#475569;">This is a rendered demonstration slide.</p>
-      </section>
-      <section style="display:flex; justify-content:center; align-items:center; flex-direction:column; padding:40px; text-align:center;">
-        <h2 style="font-size:2rem; margin-bottom:12px; color:#0284c7;">Slide 2: Features</h2>
-        <p style="color:#475569;">Full navigation controls, file upload support, and presentation switching.</p>
-      </section>
-      <section style="display:flex; justify-content:center; align-items:center; flex-direction:column; padding:40px; text-align:center;">
-        <h2 style="font-size:2rem; margin-bottom:12px; color:#0284c7;">Slide 3: Summary</h2>
-        <p style="color:#475569;">You have reached the end of the presentation.</p>
-      </section>
+  // 3. Optional: Add active keyboard accessibility indicator
+  toolCards.forEach((card, index) => {
+    const shortcutBadge = document.createElement("span");
+    shortcutBadge.className = "shortcut-badge";
+    shortcutBadge.textContent = `[${index + 1}]`;
+    shortcutBadge.style.cssText = `
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 0.75rem;
+      color: #64748b;
+      font-family: monospace;
     `;
-
-    slides = Array.from(slideStage.querySelectorAll("section"));
-    totalSlides = slides.length;
-    showSlide(0);
-  }
-
-  function showSlide(index) {
-    slides.forEach((slide, idx) => {
-      if (idx === index) {
-        slide.classList.add("active-slide");
-      } else {
-        slide.classList.remove("active-slide");
-      }
-    });
-
-    currentSlideIndex = index;
-    updateUI();
-  }
-
-  function updateUI() {
-    currentSlideEl.textContent = totalSlides > 0 ? currentSlideIndex + 1 : 0;
-    totalSlidesEl.textContent = totalSlides;
-
-    prevBtn.disabled = currentSlideIndex <= 0;
-    nextBtn.disabled = currentSlideIndex >= totalSlides - 1 || totalSlides === 0;
-  }
-
-  function showLoading() {
-    slideStage.innerHTML = `<div class="loading-spinner">Loading Presentation...</div>`;
-    prevBtn.disabled = true;
-    nextBtn.disabled = true;
-    currentSlideEl.textContent = 0;
-    totalSlidesEl.textContent = 0;
-  }
-
-  function showError(msg) {
-    slideStage.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 20px;">${msg}</div>`;
-  }
-
-  // Load initial demo/placeholder presentation
-  renderDemoSlides();
+    card.style.position = "relative";
+    card.appendChild(shortcutBadge);
+  });
 });
