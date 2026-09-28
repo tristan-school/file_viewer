@@ -3,92 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hub Portal</title>
+  <title>App Launcher</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Navigation Bar -->
-  <nav class="navbar">
-    <div class="nav-brand">
-      <i class="fa-solid fa-shapes"></i>
-      <span>AppHub</span>
+  <!-- App Launcher Header -->
+  <header class="app-header">
+    <div class="logo">
+      <i class="fa-solid fa-shapes"></i> AppHub Launcher
     </div>
-    <ul class="nav-links">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="pptx-viewer.html">PPTX Viewer</a></li>
-      <li><a href="#about">About</a></li>
-    </ul>
-  </nav>
-
-  <!-- Hero Section -->
-  <header class="hero">
-    <h1>Welcome to Your Productivity Suite</h1>
-    <p>Access interactive applications, view presentations, and manage your daily tasks seamlessly.</p>
   </header>
 
-  <!-- Tools / Pages Grid -->
-  <main class="container">
-    <h2 class="section-title">Featured Tools & Applications</h2>
+  <!-- Central Tool Launcher Grid -->
+  <main class="launcher-container">
+    <div class="launcher-grid">
 
-    <div class="card-grid">
+      <!-- Launch PPTX Viewer Button / Tile -->
+      <a href="pptx-viewer.html" class="tool-card primary">
+        <div class="icon-wrapper">
+          <i class="fa-solid fa-file-powerpoint"></i>
+        </div>
+        <div class="tool-info">
+          <h2>PPTX Viewer</h2>
+          <p>Launch Presentation Tool</p>
+        </div>
+        <span class="launch-btn">Launch <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
 
-      <!-- PPTX Viewer Card -->
-      <div class="card highlight">
-        <div class="card-icon">
-          <i class="fa-file-powerpoint"></i>
+      <!-- Launch PDF Viewer -->
+      <a href="pdf-viewer.html" class="tool-card">
+        <div class="icon-wrapper">
+          <i class="fa-solid fa-file-pdf"></i>
         </div>
-        <div class="card-content">
-          <h3>PPTX Viewer</h3>
-          <p>Present, switch, and upload PowerPoint files online directly inside your browser with full controls.</p>
-          <a href="pptx-viewer.html" class="btn primary-btn">Launch Viewer &rarr;</a>
+        <div class="tool-info">
+          <h2>PDF Reader</h2>
+          <p>Launch Document Viewer</p>
         </div>
-      </div>
+        <span class="launch-btn">Launch <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
 
-      <!-- PDF Reader Card -->
-      <div class="card">
-        <div class="card-icon">
-          <i class="fa-file-pdf"></i>
+      <!-- Launch Media Player -->
+      <a href="media-player.html" class="tool-card">
+        <div class="icon-wrapper">
+          <i class="fa-solid fa-circle-play"></i>
         </div>
-        <div class="card-content">
-          <h3>PDF Document Reader</h3>
-          <p>Open, highlight, and annotate PDF documents seamlessly on any web device.</p>
-          <a href="#" class="btn secondary-btn">Coming Soon</a>
+        <div class="tool-info">
+          <h2>Media Player</h2>
+          <p>Launch Audio & Video Player</p>
         </div>
-      </div>
+        <span class="launch-btn">Launch <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
 
-      <!-- Analytics Dashboard Card -->
-      <div class="card">
-        <div class="card-icon">
-          <i class="fa-chart-pie"></i>
+      <!-- Launch Canvas -->
+      <a href="canvas.html" class="tool-card">
+        <div class="icon-wrapper">
+          <i class="fa-solid fa-palette"></i>
         </div>
-        <div class="card-content">
-          <h3>Analytics Dashboard</h3>
-          <p>Track metrics, render charts, and synthesize key performance indicators in real-time.</p>
-          <a href="#" class="btn secondary-btn">Coming Soon</a>
+        <div class="tool-info">
+          <h2>Whiteboard Canvas</h2>
+          <p>Launch Drawing Studio</p>
         </div>
-      </div>
-
-      <!-- Quick Canvas Card -->
-      <div class="card">
-        <div class="card-icon">
-          <i class="fa-paintbrush"></i>
-        </div>
-        <div class="card-content">
-          <h3>Digital Canvas</h3>
-          <p>Sketch, whiteboard ideas, and export interactive vector drawings instantly.</p>
-          <a href="#" class="btn secondary-btn">Coming Soon</a>
-        </div>
-      </div>
+        <span class="launch-btn">Launch <i class="fa-solid fa-arrow-right"></i></span>
+      </a>
 
     </div>
   </main>
-
-  <!-- Footer -->
-  <footer class="main-footer">
-    <p>&copy; 2026 AppHub Suite. All rights reserved.</p>
-  </footer>
 
 </body>
 </html>
